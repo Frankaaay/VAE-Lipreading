@@ -1,1 +1,1 @@
-# Lipreading-via-VAE
+# UCIrvine-CS179-VAE-Lipreading
