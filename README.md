@@ -64,7 +64,4 @@ pip install -r requirements.txt
 
 If latent files do not exist yet, run `vae_train_export` first so the downstream classifiers have features to load.
 
-## Notes
 
-- Large model and feature artifacts such as `.pt` and `.npy` files are not meant to be versioned.
-- If you want, I can also remove the older notebook copies after you confirm the merged notebook works for your workflow.
