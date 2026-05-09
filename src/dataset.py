@@ -15,9 +15,11 @@ _transform = T.Compose([
 def collect_video_align_pairs(data_root: str = "data", num_subsets: int = 10):
     pairs = []
     for subset in range(1, num_subsets + 1):
-        subset_path = f"subset{subset}"
-        video_dir = os.path.join(data_root, subset_path, f"s{subset}")
-        align_dir = os.path.join(data_root, subset_path, "align")
+        # Kaggle dataset structure: 
+        # videos: <data_root>/data/s1
+        # aligns: <data_root>/data/alignments/s1
+        video_dir = os.path.join(data_root, "data", f"s{subset}")
+        align_dir = os.path.join(data_root, "data", "alignments", f"s{subset}")
 
         if not os.path.isdir(video_dir) or not os.path.isdir(align_dir):
             continue
