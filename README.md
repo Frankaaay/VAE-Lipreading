@@ -53,3 +53,19 @@ We provide a Streamlit frontend (`app.py`) to easily demonstrate the model.
    ```
 
 *Note: This app is optimized for deployment on Hugging Face Spaces for portfolio showcases.*
+
+## Dataset
+
+The project uses the GRID corpus from Sheffield: https://spandh.dcs.shef.ac.uk/gridcorpus/
+
+Each sample consists of a short MPG video and an `.align` file that marks which word is spoken at which timestamps. The subset used in the paper is based on 10 speakers covering all 53 words, with additional out-of-distribution testing on other speakers.
+
+## Results From the Paper
+
+- VAE training time: about 93 minutes
+- Best MLP test accuracy on latent features: 77.3%
+- Out-of-distribution MLP accuracy: 52.4%
+- DNN test accuracy on sampled latent points: 24.87%
+- XGBoost test accuracy on sampled latent points: 24.6%
+
+The key takeaway from the write-up is that the latent mean and log-variance were more useful than stochastic sampling for classification.
