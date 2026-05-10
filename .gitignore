@@ -1,0 +1,15 @@
+# Environments
+.venv/
+venv/
+env/
+__pycache__/
+
+# Data and Model Weights
+data/
+*.pt
+*.npy
+*.pth
+
+# OS and Editor
+.vscode/
+.DS_Store

@@ -26,10 +26,22 @@ You can easily train this model without a local GPU by running it on Google Cola
    ```bash
    !git clone https://github.com/YOUR_USERNAME/VAE-Lipreading.git
    %cd VAE-Lipreading
-   !pip install -r requirements.txt
+   !pip install -r requirements.txt kagglehub
    ```
-3. Run the VAE training to learn features and export latent representations:
+3. Download the dataset and run the VAE training to learn features and export latent representations:
+   ```python
+   import kagglehub
+   import os
+
+   # This downloads the 15GB lipreading dataset and returns the path
+   dataset_path = kagglehub.dataset_download("mohamedbentalb/lipreading-dataset")
+   print("Dataset downloaded to:", dataset_path)
+
+   # Pass the dataset_path directly via a simple environment variable
+   os.environ["DATA_ROOT"] = dataset_path
+   ```
    ```bash
+   !sed -i 's/DATA_ROOT: str = "data"/DATA_ROOT: str = os.getenv("DATA_ROOT", "data")/g' src/config.py
    !python -m src.train --mode vae
    ```
 4. Run the classifier training on the extracted latent features:
@@ -38,21 +50,42 @@ You can easily train this model without a local GPU by running it on Google Cola
    ```
 5. Once trained, download the `vae_trained.pt` and `MLPClassifier_full.pt` models to use in your web app.
 
-## Web App Showcase
+### Downloading Data Locally
 
-We provide a Streamlit frontend (`app.py`) to easily demonstrate the model. 
+If you wish to download the full 15GB dataset to your local machine for testing or local training, you can use the provided download script:
+
+```bash
+python download_data.py
+```
+This script uses `kagglehub` to fetch the dataset and automatically moves it into a local `data/` folder inside the project. Note that this folder is ignored by git to prevent accidental uploads.
+
+## Evaluation
+
+To verify the test accuracy reproduced in the thesis, we provide an evaluation script. This script loads the saved test latent features and tests them against the trained tabular classifier:
+
+```bash
+python evaluate.py
+```
+This should yield an accuracy of around **80.3%**, matching the results stated in our findings.
+
+## Inference and Web App Prototype
+
+We provide a Streamlit frontend (`app.py`) as a basic inference UI prototype. 
+
+**Important Data Limitation:** This model is designed strictly for **word-level lipreading**. During training, we used the dataset's `.align` files to crop out the exact frames where a single word was spoken (usually ~0.5 seconds). 
+If you upload a raw, uncropped 3-second `.mpg` video from the GRID dataset into the web app, it will process the entire full sentence and the silence padding at once. Due to the high class imbalance (silence taking up >25% of the frames), the model will overwhelmingly predict `sil` (silence) for uncropped videos.
+
+To test `app.py` correctly, you must upload a pre-cropped video that isolates *only* the specific word being spoken, mirroring the training data alignment.
 
 1. Install Streamlit:
    ```bash
    pip install streamlit
    ```
-2. Place your trained `.pt` weight files in the repository root.
+2. Place your trained `.pt` weight files in the `data/` folder.
 3. Run the app:
    ```bash
    streamlit run app.py
    ```
-
-*Note: This app is optimized for deployment on Hugging Face Spaces for portfolio showcases.*
 
 ## Dataset
 

@@ -4,9 +4,10 @@ import torchvision
 from torchvision.models.video import R3D_18_Weights
 
 class VideoVAE(nn.Module):
-    def __init__(self, latent_dim=128, num_classes=53):
+    def __init__(self, latent_dim=128, num_classes=53, use_pretrained=True):
         super().__init__()
-        base = torchvision.models.video.r3d_18(weights=R3D_18_Weights.DEFAULT)
+        weights = R3D_18_Weights.DEFAULT if use_pretrained else None
+        base = torchvision.models.video.r3d_18(weights=weights)
         self.encoder = nn.Sequential(*list(base.children())[:-1])
         self.encoder_out_dim = 512
 
